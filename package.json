@@ -4,7 +4,7 @@
   "description": "identity-5",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && cd build && cd src && node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/twelvefish/Identity-5#readme",
   "dependencies": {
-    "express": "^4.16.4"
+    "@line/bot-sdk": "^6.4.0",
+    "@types/express": "^4.16.0",
+    "express": "^4.16.4",
+    "typescript": "^3.2.2"
   }
 }
