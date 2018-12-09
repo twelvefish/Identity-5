@@ -16,7 +16,9 @@ export const welcomeMessage = (event: MemberJoinEvent) => {
                 type: "text",
                 text: `歡迎新來的${member.displayName}萌新😊\n\n` +
                     `\t\t\t\t記事本看下規則，記得按下符號表示看過\uDBC0\uDC09，有任何事情請召喚群管，歡迎一起歡樂開黑玩遊戲～\n\n` +
-                    `\t\t\t\t記得動動小手把群組提醒關掉🙈🙈🙈，這裡有點熱鬧\uDBC0\uDC35`
+                    `\t\t\t\t記得動動小手把群組提醒關掉🙈🙈🙈，這裡有點熱鬧\uDBC0\uDC35\n\n`+
+                    `https://discord.gg/BZgmVBw\n`+
+                    `喜歡語音的夥伴這裡有連結\uDBC0\uDCAE\uDBC0\uDCAE`
             }
             // const welcomePic: ImageMessage = {
             //     type: "image",
