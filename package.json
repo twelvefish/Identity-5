@@ -4,8 +4,7 @@
   "description": "identity-5",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && cd build && cd src && node index.js",
-    "build": "tsc && cd build && cd src && node index.js"
+    "start": "tsc && cd build && cd src && node index.js"
   },
   "repository": {
     "type": "git",
