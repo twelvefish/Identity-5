@@ -52,7 +52,7 @@ export const welcomeMessage = (event: MemberJoinEvent) => {
                                                 "type": "text",
                                                 "text": `歡迎新來的${member.displayName}萌新😊\n\n` +
                                                     `\t\t\t\t記事本看下規則，記得按下符號表示看過，有任何事情請召喚群管，歡迎一起歡樂開黑玩遊戲～\n\n` +
-                                                    `\t\t\t\t記得動動小手把群組提醒關掉🙈🙈🙈，這裡有點熱鬧\uDBC0\uDC35\n\n`,
+                                                    `\t\t\t\t記得動動小手把群組提醒關掉🙈🙈🙈，這裡有點熱鬧💘💘`,
                                                 "wrap": true,
                                                 "color": "#666666",
                                                 "size": "sm",
