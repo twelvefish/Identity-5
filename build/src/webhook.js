@@ -30,7 +30,10 @@ router.post('/webhook', Line.middleware(config_1.LineConfig), (req, res) => {
     });
     Promise
         .all(req.body.events.map(handleEvent))
-        .then((result) => res.json(result))
+        .then((result) => {
+        res.json(result);
+        res.status(200).end();
+    })
         .catch((err) => {
         console.error("err", err);
         res.status(500).end();

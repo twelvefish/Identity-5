@@ -8,3 +8,10 @@ export const LineConfig = {
     channelSecret: String(process.env.channelSecret),
     channelAccessToken: String(process.env.channelAccessToken)
 }
+
+//測試號
+// export const LineConfig = {
+//     channelId: "1629838735",
+//     channelSecret: "d91d59e2249d00223f1aa4a35a00f665",
+//     channelAccessToken: "UhR1oq9Cq5aUtJTAiRlSpILu4nt9yskG3gu0jIAtq+LbnYGLfwUuNntnuImwH5xi99BDthgmHkywsyTrZOLzR9kRuhFdV0zC43eTsszLKjFRxifhHCQffs1vMccLwTiADLpaO+PbcQheKQQ1t/2ISQdB04t89/1O/w1cDnyilFU="
+// }
