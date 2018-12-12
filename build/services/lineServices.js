@@ -100,7 +100,7 @@ exports.welcomeMessage = (event) => {
 };
 exports.text = (groupId, event) => {
     const text = event.text;
-    if (text.indexOf('髒') == -1 || text.indexOf('骨葬') == -1) {
+    if (text.indexOf('髒') != -1 || text.indexOf('骨葬') != -1) {
         dirtyWords(groupId);
     }
 };

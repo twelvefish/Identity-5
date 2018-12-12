@@ -95,7 +95,7 @@ export const welcomeMessage = (event: MemberJoinEvent) => {
 
 export const text = (groupId: string, event: TextEventMessage) => {
     const text = event.text
-    if (text.indexOf('髒') == -1 || text.indexOf('骨葬') == -1) {
+    if (text.indexOf('髒') != -1 || text.indexOf('骨葬') != -1) {
         dirtyWords(groupId)
     }
 }
