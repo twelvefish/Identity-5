@@ -10,7 +10,7 @@
 //     channelAccessToken: String(process.env.channelAccessToken)
 // }
 Object.defineProperty(exports, "__esModule", { value: true });
-//測試號
+// 測試號
 exports.LineConfig = {
     channelId: "1629838735",
     channelSecret: "d91d59e2249d00223f1aa4a35a00f665",

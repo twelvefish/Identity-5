@@ -9,7 +9,7 @@ export const LineConfig = {
     channelAccessToken: String(process.env.channelAccessToken)
 }
 
-//測試號
+// 測試號
 // export const LineConfig = {
 //     channelId: "1629838735",
 //     channelSecret: "d91d59e2249d00223f1aa4a35a00f665",

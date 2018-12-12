@@ -1,7 +1,7 @@
 import * as Line from '@line/bot-sdk'
 import { LineConfig } from '../src/config'
 const lineClient = new Line.Client(LineConfig)
-import { TextMessage, MemberJoinEvent, ImageMessage, FlexBubble, FlexMessage } from '@line/bot-sdk';
+import { MemberJoinEvent, TextEventMessage, TextMessage } from '@line/bot-sdk';
 import { pushMessages } from '../services/linePushServices'
 
 export const welcomeMessage = (event: MemberJoinEvent) => {
@@ -91,4 +91,19 @@ export const welcomeMessage = (event: MemberJoinEvent) => {
             pushMessages(groupId, [welcome])
         }).catch(err => console.log(err))
     }
+}
+
+export const text = (groupId: string, event: TextEventMessage) => {
+    const text = event.text
+    if (text.indexOf('髒') == -1 || text.indexOf('骨葬') == -1) {
+        dirtyWords(groupId)
+    }
+}
+
+const dirtyWords = (groupId: string) => {
+    const message: TextMessage = {
+        type: "text",
+        text: "大膽奴才.....你才髒 ! ! !\n你全家都髒"
+    }
+    pushMessages(groupId, [message])
 }

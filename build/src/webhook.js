@@ -24,6 +24,18 @@ router.post('/webhook', Line.middleware(config_1.LineConfig), (req, res) => {
             case 'memberJoined':
                 lineServices.welcomeMessage(event);
                 break;
+            case 'message':
+                if (event.source.type == 'group') {
+                    const groupId = event.source.groupId;
+                    switch (event.message.type) {
+                        case 'text':
+                            lineServices.text(groupId, event.message);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
             default:
                 break;
         }

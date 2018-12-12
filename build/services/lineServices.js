@@ -16,21 +16,7 @@ exports.welcomeMessage = (event) => {
         const groupId = event.source.groupId;
         const lineId = event.joined.members[0].userId;
         lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
-            console.log("member123", member);
-            // const welcome: TextMessage = {
-            //     type: "text",
-            //     text: `歡迎新來的${member.displayName}萌新😊\n\n` +
-            //         `\t\t\t\t記事本看下規則，記得按下符號表示看過\uDBC0\uDC09，有任何事情請召喚群管，歡迎一起歡樂開黑玩遊戲～\n\n` +
-            //         `\t\t\t\t記得動動小手把群組提醒關掉🙈🙈🙈，這裡有點熱鬧\uDBC0\uDC35\n\n`+
-            //         `https://discord.gg/BZgmVBw\n`+
-            //         `喜歡語音的夥伴這裡有連結\uDBC0\uDCAE\uDBC0\uDCAE`
-            // }
-            // const welcomePic: ImageMessage = {
-            //     type: "image",
-            //     originalContentUrl: member.pictureUrl,
-            //     previewImageUrl: member.pictureUrl
-            // }
-            // pushMessages(groupId, [welcome, welcomePic])
+            console.log("member", member);
             const welcome = {
                 type: "flex",
                 altText: "第五人格歡樂唱",
@@ -71,8 +57,8 @@ exports.welcomeMessage = (event) => {
                                             {
                                                 "type": "text",
                                                 "text": `歡迎新來的${member.displayName}萌新😊\n\n` +
-                                                    `\t\t\t\t記事本看下規則，記得按下符號表示看過\uDBC0\uDC09，有任何事情請召喚群管，歡迎一起歡樂開黑玩遊戲～\n\n` +
-                                                    `\t\t\t\t記得動動小手把群組提醒關掉🙈🙈🙈，這裡有點熱鬧\uDBC0\uDC35\n\n`,
+                                                    `\t\t\t\t記事本看下規則，記得按下符號表示看過，有任何事情請召喚群管，歡迎一起歡樂開黑玩遊戲～\n\n` +
+                                                    `\t\t\t\t記得動動小手把群組提醒關掉🙈🙈🙈，這裡有點熱鬧💘💘`,
                                                 "wrap": true,
                                                 "color": "#666666",
                                                 "size": "sm",
@@ -111,4 +97,17 @@ exports.welcomeMessage = (event) => {
             linePushServices_1.pushMessages(groupId, [welcome]);
         }).catch(err => console.log(err));
     }
+};
+exports.text = (groupId, event) => {
+    const text = event.text;
+    if (text.indexOf('髒') == -1 || text.indexOf('骨葬') == -1) {
+        dirtyWords(groupId);
+    }
+};
+const dirtyWords = (groupId) => {
+    const message = {
+        type: "text",
+        text: "大膽奴才.....你才髒 ! ! !\n你全家都髒"
+    };
+    linePushServices_1.pushMessages(groupId, [message]);
 };

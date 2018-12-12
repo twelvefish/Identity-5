@@ -19,9 +19,21 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
         switch (event.type) {
             case 'memberJoined':
                 lineServices.welcomeMessage(event)
-                break;
+                break
+            case 'message':
+                if (event.source.type == 'group') {
+                    const groupId = event.source.groupId
+                    switch (event.message.type) {
+                        case 'text':
+                            lineServices.text(groupId, event.message)
+                            break
+                        default:
+                            break
+                    }
+                }
+                break
             default:
-                break;
+                break
         }
     })
     Promise
@@ -39,11 +51,11 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
 
 const handleEvent = (event: any) => {
     return true
-//     if (event.type !== 'message' || event.message.type !== 'text') {
-//         return Promise.resolve(null);
-//     }
-//     const echo: TextMessage = { type: 'text', text: String(event.message.text) };
-//     return lineClient.replyMessage(event.replyToken, echo);
+    //     if (event.type !== 'message' || event.message.type !== 'text') {
+    //         return Promise.resolve(null);
+    //     }
+    //     const echo: TextMessage = { type: 'text', text: String(event.message.text) };
+    //     return lineClient.replyMessage(event.replyToken, echo);
 }
 
 module.exports = router
