@@ -11,6 +11,7 @@ const Line = __importStar(require("@line/bot-sdk"));
 const config_1 = require("../src/config");
 const lineClient = new Line.Client(config_1.LineConfig);
 const linePushServices_1 = require("../services/linePushServices");
+const memberServices = __importStar(require("../dbServices/memberServices"));
 exports.welcomeMessage = (event) => {
     if (event.source.type == 'group') {
         const groupId = event.source.groupId;
@@ -98,11 +99,21 @@ exports.welcomeMessage = (event) => {
         }).catch(err => console.log(err));
     }
 };
-exports.text = (groupId, event) => {
+exports.text = (source, event, timestamp) => {
     const text = event.text;
-    if (text.indexOf('髒') != -1 || text.indexOf('骨葬') != -1) {
-        dirtyWords(groupId);
-    }
+    const groupId = source.groupId;
+    const lineId = source.userId ? source.userId : '';
+    lineClient.getGroupMemberProfile(source.groupId, lineId).then(member => {
+        if (text.startsWith('波妞設定', 0)) {
+            setMember(groupId, member, text.slice(5, text.length), timestamp);
+        }
+        else if (text.startsWith('波妞查詢', 0)) {
+            // searchMemberData()
+        }
+        else if (text.indexOf('髒') != -1 || text.indexOf('骨葬') != -1) {
+            dirtyWords(groupId);
+        }
+    });
 };
 const dirtyWords = (groupId) => {
     const message = {
@@ -110,4 +121,61 @@ const dirtyWords = (groupId) => {
         text: "大膽奴才.....你才髒 ! ! !\n你全家都髒"
     };
     linePushServices_1.pushMessages(groupId, [message]);
+};
+const setMember = (groupId, memberLine, text, timestamp) => {
+    console.log("===使用者輸入===", text);
+    let level = 0;
+    const levelString = text.split(" ")[2] ? text.split(" ")[2] : '';
+    if (levelString) {
+        if (levelString.indexOf('1') != -1 || levelString.indexOf('一') != -1 || levelString.indexOf('壹') != -1) {
+            level = 1;
+        }
+        else if (levelString.indexOf('2') != -1 || levelString.indexOf('二') != -1 || levelString.indexOf('貳') != -1) {
+            level = 2;
+        }
+        else if (levelString.indexOf('3') != -1 || levelString.indexOf('三') != -1 || levelString.indexOf('參') != -1) {
+            level = 3;
+        }
+        else if (levelString.indexOf('4') != -1 || levelString.indexOf('四') != -1 || levelString.indexOf('肆') != -1) {
+            level = 4;
+        }
+        else if (levelString.indexOf('5') != -1 || levelString.indexOf('五') != -1 || levelString.indexOf('伍') != -1) {
+            level = 5;
+        }
+        else if (levelString.indexOf('6') != -1 || levelString.indexOf('六') != -1 || levelString.indexOf('陸') != -1) {
+            level = 6;
+        }
+        else {
+            level = 0;
+        }
+    }
+    let member = {
+        id_Line: memberLine.userId,
+        name_Line: memberLine.displayName,
+        id_Game: text.split(" ")[1],
+        name_Game: text.split(" ")[0],
+        level: level,
+        remarks: text.split(" ")[3] ? text.split(" ")[3] : '',
+        timestamp: timestamp
+    };
+    console.log("===member===", member);
+    if (level != 0) {
+        memberServices.setMember(member).then(data => {
+            linePushServices_1.pushMessages(groupId, [{
+                    type: "text",
+                    text: `波妞對你說 : 恭喜${member.name_Line}第五人格個資設定成功`
+                }]);
+        }).catch(() => {
+            linePushServices_1.pushMessages(groupId, [{
+                    type: "text",
+                    text: `波妞對你說 : ${member.name_Line}出現未知的錯誤，請重新嘗試一遍`
+                }]);
+        });
+    }
+    else {
+        linePushServices_1.pushMessages(groupId, [{
+                type: "text",
+                text: "波妞對你說 : Sor，階層輸入錯誤"
+            }]);
+    }
 };

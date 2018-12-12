@@ -14,6 +14,7 @@ router.use(function (req, res, next) {
 
 router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
     const events: WebhookEvent[] = req.body.events
+    let responseArray: Promise<any>[] = []
     events.forEach(event => {
         console.log(JSON.stringify(event, null, 4))
         switch (event.type) {
@@ -22,10 +23,10 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
                 break
             case 'message':
                 if (event.source.type == 'group') {
-                    const groupId = event.source.groupId
+                    const source = event.source
                     switch (event.message.type) {
                         case 'text':
-                            lineServices.text(groupId, event.message)
+                        lineServices.text(source, event.message,event.timestamp)
                             break
                         default:
                             break
@@ -37,7 +38,7 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
         }
     })
     Promise
-        .all(req.body.events.map(handleEvent))
+        .all(responseArray)
         .then((result) => {
             res.json(result)
             res.status(200).end()
@@ -49,13 +50,12 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
 })
 
 
-const handleEvent = (event: any) => {
-    return true
+// const handleEvent = (event: any) => {
     //     if (event.type !== 'message' || event.message.type !== 'text') {
     //         return Promise.resolve(null);
     //     }
     //     const echo: TextMessage = { type: 'text', text: String(event.message.text) };
     //     return lineClient.replyMessage(event.replyToken, echo);
-}
+// }
 
 module.exports = router
