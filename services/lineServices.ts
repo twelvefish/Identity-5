@@ -177,7 +177,7 @@ const findMember = (groupId: string, memberLine: Profile) => {
             let member = memberSnapshot.docs[0].data() as Member
             let message: string = ''
             if (member.remarks) {
-                message = `備註   :${member.remarks}`
+                message = `備註       : ${member.remarks}`
             }
             pushMessages(groupId, [{
                 type: "text",

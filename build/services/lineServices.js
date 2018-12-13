@@ -188,7 +188,7 @@ const findMember = (groupId, memberLine) => {
             let member = memberSnapshot.docs[0].data();
             let message = '';
             if (member.remarks) {
-                message = `備註   :${member.remarks}`;
+                message = `備註       : ${member.remarks}`;
             }
             linePushServices_1.pushMessages(groupId, [{
                     type: "text",
