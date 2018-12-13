@@ -12,3 +12,6 @@ const memberCollection = admin.firestore().collection("Member");
 exports.setMember = function (member) {
     return memberCollection.doc(member.id_Line).set(member, { merge: true });
 };
+exports.getMember = function (lineId) {
+    return memberCollection.where("id_Line", "==", lineId).get();
+};

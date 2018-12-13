@@ -107,6 +107,9 @@ exports.text = (source, event, timestamp) => {
         if (text.startsWith('波妞設定', 0)) {
             setMember(groupId, member, text.slice(5, text.length), timestamp);
         }
+        else if (text == '波妞個資') {
+            findMember(groupId, member);
+        }
         else if (text.startsWith('波妞查詢', 0)) {
             // searchMemberData()
         }
@@ -178,4 +181,33 @@ const setMember = (groupId, memberLine, text, timestamp) => {
                 text: "波妞對你說 : Sor，階層輸入錯誤"
             }]);
     }
+};
+const findMember = (groupId, memberLine) => {
+    memberServices.getMember(memberLine.userId).then(memberSnapshot => {
+        if (!memberSnapshot.empty) {
+            let member = memberSnapshot.docs[0].data();
+            let message = '';
+            if (member.remarks) {
+                message = `備註   :${member.remarks}`;
+            }
+            linePushServices_1.pushMessages(groupId, [{
+                    type: "text",
+                    text: "波妞~波妞~\n\n" +
+                        `Line姓名  : ${memberLine.displayName}\n` +
+                        `遊戲姓名 : ${member.name_Game}\n` +
+                        `遊戲ID    : ${member.id_Game}\n` +
+                        `位階       : ${member.level}階\n` + message
+                }]);
+        }
+        else {
+            linePushServices_1.pushMessages(groupId, [{
+                    type: "text",
+                    text: "波妞對你說 :Sor，你的個資不存在，請重新進行設定\n\n" +
+                        "第五人格個資基本設定(給我用半型空白)\n\n" +
+                        "波妞設定 遊戲名稱 遊戲ID 幾階 備註\n" +
+                        "波妞個資\n" +
+                        "波妞查詢 (Line名稱 / 遊戲名稱 / 遊戲ID / 幾階 / 備註)"
+                }]);
+        }
+    });
 };
