@@ -111,7 +111,7 @@ exports.text = (source, event, timestamp) => {
             findMember(groupId, member);
         }
         else if (text.startsWith('波妞查詢', 0)) {
-            // searchMemberData()
+            searchMember(groupId, member, text.slice(5, text.length));
         }
         else if (text.indexOf('髒') != -1 || text.indexOf('骨葬') != -1) {
             dirtyWords(groupId);
@@ -183,20 +183,19 @@ const setMember = (groupId, memberLine, text, timestamp) => {
     }
 };
 const findMember = (groupId, memberLine) => {
-    memberServices.getMember(memberLine.userId).then(memberSnapshot => {
-        if (!memberSnapshot.empty) {
-            let member = memberSnapshot.docs[0].data();
+    memberServices.getMember(memberLine.userId).then(members => {
+        if (members.length > 0) {
             let message = '';
-            if (member.remarks) {
-                message = `備註       : ${member.remarks}`;
+            if (members[0].remarks) {
+                message = `備註       : ${members[0].remarks}`;
             }
             linePushServices_1.pushMessages(groupId, [{
                     type: "text",
                     text: "波妞~波妞~\n\n" +
                         `Line姓名  : ${memberLine.displayName}\n` +
-                        `遊戲姓名 : ${member.name_Game}\n` +
-                        `遊戲ID    : ${member.id_Game}\n` +
-                        `位階       : ${member.level}階\n` + message
+                        `遊戲姓名 : ${members[0].name_Game}\n` +
+                        `遊戲ID    : ${members[0].id_Game}\n` +
+                        `位階       : ${members[0].level}階\n` + message
                 }]);
         }
         else {
@@ -207,6 +206,43 @@ const findMember = (groupId, memberLine) => {
                         "波妞設定 遊戲名稱 遊戲ID 幾階 備註\n" +
                         "波妞個資\n" +
                         "波妞查詢 (Line名稱 / 遊戲名稱 / 遊戲ID / 幾階 / 備註)"
+                }]);
+        }
+    });
+};
+const searchMember = (groupId, memberLine, text) => {
+    let keyWords = text.split(" ")[0];
+    console.log("===keyWords===", keyWords);
+    memberServices.getMembers().then((members) => {
+        if (members.length > 0) {
+            let matchMember = "序號，Line姓名，遊戲姓名，遊戲ID，位階，備註\n\n";
+            let count = 1;
+            for (let member of members) {
+                Object.keys(member).map(key => {
+                    if (key != "timestamp" && key != "id_Line") {
+                        if (String(member[key]).indexOf(keyWords) != -1 && matchMember.indexOf(member.name_Line) == -1 && matchMember.indexOf(member.id_Game) == -1) {
+                            let data = `${count}、${member.name_Line}，${member.name_Game}，${member.id_Game}，${member.level}階`;
+                            if (member.remarks) {
+                                data = data + `，${member.remarks}`;
+                            }
+                            matchMember = matchMember + data + "\n";
+                            count = count + 1;
+                        }
+                    }
+                });
+            }
+            if (matchMember == "序號，Line姓名，遊戲姓名，遊戲ID，位階，備註\n\n") {
+                matchMember = matchMember + "目前系統並無相對應的匹配資料\n";
+            }
+            linePushServices_1.pushMessages(groupId, [{
+                    type: "text",
+                    text: matchMember
+                }]);
+        }
+        else {
+            linePushServices_1.pushMessages(groupId, [{
+                    type: "text",
+                    text: "波妞對你說 : 系統欠缺資料，請大家踴躍提供"
                 }]);
         }
     });

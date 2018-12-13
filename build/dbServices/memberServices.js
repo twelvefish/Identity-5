@@ -13,5 +13,16 @@ exports.setMember = function (member) {
     return memberCollection.doc(member.id_Line).set(member, { merge: true });
 };
 exports.getMember = function (lineId) {
-    return memberCollection.where("id_Line", "==", lineId).get();
+    return memberCollection.where("id_Line", "==", lineId).get().then(snapshot => {
+        return snapshot.docs.map(doc => {
+            return doc.data();
+        });
+    });
+};
+exports.getMembers = function () {
+    return memberCollection.get().then(snapshot => {
+        return snapshot.docs.map(doc => {
+            return doc.data();
+        });
+    });
 };
