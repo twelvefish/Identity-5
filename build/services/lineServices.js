@@ -6,32 +6,37 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const Line = __importStar(require("@line/bot-sdk"));
-const config_1 = require("../src/config");
-const lineClient = new Line.Client(config_1.LineConfig);
+const config = __importStar(require("../src/config"));
+const lineClient = new Line.Client(config.LineConfig);
 const linePushServices_1 = require("../services/linePushServices");
 const memberServices = __importStar(require("../dbServices/memberServices"));
-exports.welcomeMessage = (event) => {
+const userServices = __importStar(require("../dbServices/userServices"));
+const uuid_1 = __importDefault(require("uuid"));
+exports.welcomeAction = (event) => {
     if (event.source.type == 'group') {
         const groupId = event.source.groupId;
         const lineId = event.joined.members[0].userId;
         lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
             console.log("member", member);
-            const welcome = {
+            const welcomeMessage = {
                 type: "flex",
                 altText: "第五人格歡樂唱",
                 contents: {
                     "type": "bubble",
                     "hero": {
                         "type": "image",
-                        "url": member.pictureUrl,
+                        "url": member.pictureUrl ? member.pictureUrl : config.picUrl,
                         "size": "full",
-                        "aspectRatio": "20:13",
+                        "aspectRatio": "20:20",
                         "aspectMode": "cover",
                         "action": {
                             "type": "uri",
-                            "uri": member.pictureUrl
+                            "uri": member.pictureUrl ? member.pictureUrl : config.picUrl
                         }
                     },
                     "body": {
@@ -95,8 +100,34 @@ exports.welcomeMessage = (event) => {
                     }
                 }
             };
-            linePushServices_1.pushMessages(groupId, [welcome]);
+            linePushServices_1.pushMessages(groupId, [welcomeMessage]);
         }).catch(err => console.log(err));
+    }
+};
+exports.leaveAction = (event) => {
+    if (event.source.type == 'group') {
+        const groupId = event.source.groupId;
+        const lineId = event.left.members[0].userId;
+        console.log("groupId", groupId);
+        console.log("lineId", lineId);
+        userServices.getUserByLineId(lineId).then(users => {
+            if (users.length == 0) {
+                const leaveMessage = {
+                    type: "text",
+                    text: `系統提示《未知對象》已退出群組，讓我們忘記他...`
+                };
+                linePushServices_1.pushMessages(groupId, [leaveMessage]);
+            }
+            else {
+                const leaveMessage = {
+                    type: "text",
+                    text: `系統提示《${users[0].name}》已退出群組，讓我們緬懷他XD`
+                };
+                linePushServices_1.pushMessages(groupId, [leaveMessage]);
+            }
+        }).catch(err => {
+            console.log("===User讀取失敗===", err);
+        });
     }
 };
 exports.text = (source, event, timestamp) => {
@@ -245,5 +276,39 @@ const searchMember = (groupId, memberLine, text) => {
                     text: "波妞對你說 : 系統欠缺資料，請大家踴躍提供"
                 }]);
         }
+    });
+};
+exports.checkUserExist = (groupId, lineId) => {
+    lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
+        userServices.getUserByLineId(member.userId).then(users => {
+            if (users.length == 0) {
+                let user = {
+                    id: uuid_1.default.v4(),
+                    name: member.displayName,
+                    picUrl: member.pictureUrl ? member.pictureUrl : '',
+                    lineId: member.userId
+                };
+                userServices.setUser(user).then(() => {
+                    console.log("===User新增成功===");
+                }).catch(err => {
+                    console.log("===User新增失敗===", err);
+                });
+            }
+            else {
+                let user = {
+                    id: users[0].id,
+                    name: member.displayName,
+                    picUrl: member.pictureUrl ? member.pictureUrl : '',
+                    lineId: member.userId
+                };
+                userServices.setUser(user).then(() => {
+                    console.log("===User更新成功===");
+                }).catch(err => {
+                    console.log("===User更新失敗===", err);
+                });
+            }
+        });
+    }).catch(err => {
+        console.log("===和Line交換User資料失敗===", err);
     });
 };

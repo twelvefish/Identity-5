@@ -7,3 +7,10 @@ export type Member = {
     remarks: string
     timestamp: number
 }
+
+export type User = {
+    id: string
+    name: string
+    picUrl: string
+    lineId: string
+}

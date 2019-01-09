@@ -23,7 +23,14 @@ router.post('/webhook', Line.middleware(config_1.LineConfig), (req, res) => {
         console.log(JSON.stringify(event, null, 4));
         switch (event.type) {
             case 'memberJoined':
-                lineServices.welcomeMessage(event);
+                if (event.source.type == 'group') {
+                    const source = event.source;
+                    lineServices.welcomeAction(event);
+                    // lineServices.checkUserExist(source.groupId, String(source.userId))
+                }
+                break;
+            case 'memberLeft':
+                lineServices.leaveAction(event);
                 break;
             case 'message':
                 if (event.source.type == 'group') {
@@ -31,6 +38,7 @@ router.post('/webhook', Line.middleware(config_1.LineConfig), (req, res) => {
                     switch (event.message.type) {
                         case 'text':
                             lineServices.text(source, event.message, event.timestamp);
+                            lineServices.checkUserExist(source.groupId, String(source.userId));
                             break;
                         default:
                             break;

@@ -1,32 +1,34 @@
 import * as Line from '@line/bot-sdk'
-import { LineConfig } from '../src/config'
-const lineClient = new Line.Client(LineConfig)
-import { MemberJoinEvent, TextEventMessage, TextMessage, Group, Profile } from '@line/bot-sdk';
+import * as config from '../src/config'
+const lineClient = new Line.Client(config.LineConfig)
+import { MemberJoinEvent, TextEventMessage, TextMessage, Group, Profile, MemberLeaveEvent } from '@line/bot-sdk'
 import { pushMessages } from '../services/linePushServices'
 import * as  memberServices from '../dbServices/memberServices'
-import { Member } from '../src/model';
+import * as  userServices from '../dbServices/userServices'
+import { Member, User } from '../src/model'
+import uuid from 'uuid';
 
-export const welcomeMessage = (event: MemberJoinEvent) => {
+export const welcomeAction = (event: MemberJoinEvent) => {
     if (event.source.type == 'group') {
         const groupId = event.source.groupId
         const lineId = event.joined.members[0].userId
 
         lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
             console.log("member", member)
-            const welcome: any = {
+            const welcomeMessage: any = {
                 type: "flex",
                 altText: "第五人格歡樂唱",
                 contents: {
                     "type": "bubble",
                     "hero": {
                         "type": "image",
-                        "url": member.pictureUrl,
+                        "url": member.pictureUrl ? member.pictureUrl : config.picUrl,
                         "size": "full",
-                        "aspectRatio": "20:13",
+                        "aspectRatio": "20:20",
                         "aspectMode": "cover",
                         "action": {
                             "type": "uri",
-                            "uri": member.pictureUrl
+                            "uri": member.pictureUrl ? member.pictureUrl : config.picUrl
                         }
                     },
                     "body": {
@@ -90,8 +92,34 @@ export const welcomeMessage = (event: MemberJoinEvent) => {
                     }
                 }
             }
-            pushMessages(groupId, [welcome])
+            pushMessages(groupId, [welcomeMessage])
         }).catch(err => console.log(err))
+    }
+}
+
+export const leaveAction = (event: MemberLeaveEvent) => {
+    if (event.source.type == 'group') {
+        const groupId = event.source.groupId
+        const lineId = event.left.members[0].userId
+        console.log("groupId", groupId)
+        console.log("lineId", lineId)
+        userServices.getUserByLineId(lineId).then(users => {
+            if (users.length == 0) {
+                const leaveMessage: TextMessage = {
+                    type: "text",
+                    text: `系統提示《未知對象》已退出群組，讓我們忘記他...`
+                }
+                pushMessages(groupId, [leaveMessage])
+            } else {
+                const leaveMessage: TextMessage = {
+                    type: "text",
+                    text: `系統提示《${users[0].name}》已退出群組，讓我們緬懷他XD`
+                }
+                pushMessages(groupId, [leaveMessage])
+            }
+        }).catch(err => {
+            console.log("===User讀取失敗===", err)
+        })
     }
 }
 
@@ -236,4 +264,39 @@ const searchMember = (groupId: string, memberLine: Profile, text: string) => {
             }])
         }
     })
+}
+
+export const checkUserExist = (groupId: string, lineId: string) => {
+    lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
+        userServices.getUserByLineId(member.userId).then(users => {
+            if (users.length == 0) {
+                let user: User = {
+                    id: uuid.v4(),
+                    name: member.displayName,
+                    picUrl: member.pictureUrl ? member.pictureUrl : '',
+                    lineId: member.userId
+                }
+                userServices.setUser(user).then(() => {
+                    console.log("===User新增成功===")
+                }).catch(err => {
+                    console.log("===User新增失敗===", err)
+                })
+            } else {
+                let user: User = {
+                    id: users[0].id,
+                    name: member.displayName,
+                    picUrl: member.pictureUrl ? member.pictureUrl : '',
+                    lineId: member.userId
+                }
+                userServices.setUser(user).then(() => {
+                    console.log("===User更新成功===")
+                }).catch(err => {
+                    console.log("===User更新失敗===", err)
+                })
+            }
+        })
+    }).catch(err => {
+        console.log("===和Line交換User資料失敗===", err)
+    })
+
 }

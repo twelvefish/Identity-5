@@ -28,3 +28,4 @@ exports.serviceAccountKey = {
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-p8n21%40identity-5.iam.gserviceaccount.com"
 };
+exports.picUrl = "https://firebasestorage.googleapis.com/v0/b/identity-5.appspot.com/o/%E5%8E%BB%E5%93%AA%E8%B2%B7%E5%A4%A7%E9%A0%AD%E8%B2%BC.jpg?alt=media&token=1ae3fec6-fcb6-41e9-a2bc-f7757b4b3990";
