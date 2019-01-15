@@ -4,7 +4,7 @@ import * as Line from '@line/bot-sdk'
 import { LineConfig } from './config'
 import { WebhookEvent } from '@line/bot-sdk';
 
-import * as lineServices from '../services/lineServices'
+import * as lineServices from '../channelServices/lineServices'
 var router = express.Router()
 
 router.use(function (req, res, next) {
@@ -20,21 +20,21 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
         switch (event.type) {
             case 'memberJoined':
                 if (event.source.type == 'group') {
-                    const source = event.source
-                    lineServices.welcomeAction(event)
-                    // lineServices.checkUserExist(source.groupId, String(source.userId))
+                    lineServices.welcomeAction(event.replyToken, event.source.groupId, event.joined.members[0].userId)
+                    lineServices.checkUserExist(event.source.groupId, String(event.source.userId))
                 }
                 break
             case 'memberLeft':
-                lineServices.leaveAction(event)
+                if (event.source.type == 'group') {
+                    lineServices.leaveAction(event.source.groupId, event.left.members[0].userId)
+                }
                 break
             case 'message':
                 if (event.source.type == 'group') {
-                    const source = event.source
                     switch (event.message.type) {
                         case 'text':
-                            lineServices.text(source, event.message, event.timestamp)
-                            lineServices.checkUserExist(source.groupId, String(source.userId))
+                            lineServices.text(event.source, event.message, event.timestamp)
+                            lineServices.checkUserExist(event.source.groupId, String(event.source.userId))
                             break
                         default:
                             break
@@ -45,6 +45,7 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
                 break
         }
     })
+
     Promise
         .all(responseArray)
         .then((result) => {
@@ -56,14 +57,5 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
             res.status(500).end()
         })
 })
-
-
-// const handleEvent = (event: any) => {
-//     if (event.type !== 'message' || event.message.type !== 'text') {
-//         return Promise.resolve(null);
-//     }
-//     const echo: TextMessage = { type: 'text', text: String(event.message.text) };
-//     return lineClient.replyMessage(event.replyToken, echo);
-// }
 
 module.exports = router

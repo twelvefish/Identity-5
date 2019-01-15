@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const Line = __importStar(require("@line/bot-sdk"));
 const config_1 = require("./config");
-const lineServices = __importStar(require("../services/lineServices"));
+const lineServices = __importStar(require("../channelServices/lineServices"));
 var router = express.Router();
 router.use(function (req, res, next) {
     console.log("輸出記錄訊息至終端機", req.method, req.url);
@@ -24,21 +24,21 @@ router.post('/webhook', Line.middleware(config_1.LineConfig), (req, res) => {
         switch (event.type) {
             case 'memberJoined':
                 if (event.source.type == 'group') {
-                    const source = event.source;
-                    lineServices.welcomeAction(event);
-                    // lineServices.checkUserExist(source.groupId, String(source.userId))
+                    lineServices.welcomeAction(event.replyToken, event.source.groupId, event.joined.members[0].userId);
+                    lineServices.checkUserExist(event.source.groupId, String(event.source.userId));
                 }
                 break;
             case 'memberLeft':
-                lineServices.leaveAction(event);
+                if (event.source.type == 'group') {
+                    lineServices.leaveAction(event.source.groupId, event.left.members[0].userId);
+                }
                 break;
             case 'message':
                 if (event.source.type == 'group') {
-                    const source = event.source;
                     switch (event.message.type) {
                         case 'text':
-                            lineServices.text(source, event.message, event.timestamp);
-                            lineServices.checkUserExist(source.groupId, String(source.userId));
+                            lineServices.text(event.source, event.message, event.timestamp);
+                            lineServices.checkUserExist(event.source.groupId, String(event.source.userId));
                             break;
                         default:
                             break;
@@ -60,11 +60,4 @@ router.post('/webhook', Line.middleware(config_1.LineConfig), (req, res) => {
         res.status(500).end();
     });
 });
-// const handleEvent = (event: any) => {
-//     if (event.type !== 'message' || event.message.type !== 'text') {
-//         return Promise.resolve(null);
-//     }
-//     const echo: TextMessage = { type: 'text', text: String(event.message.text) };
-//     return lineClient.replyMessage(event.replyToken, echo);
-// }
 module.exports = router;

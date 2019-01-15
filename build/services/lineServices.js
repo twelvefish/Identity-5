@@ -17,92 +17,13 @@ const linePushServices_1 = require("../services/linePushServices");
 const memberServices = __importStar(require("../dbServices/memberServices"));
 const userServices = __importStar(require("../dbServices/userServices"));
 const uuid_1 = __importDefault(require("uuid"));
-exports.welcomeAction = (event) => {
-    if (event.source.type == 'group') {
-        const groupId = event.source.groupId;
-        const lineId = event.joined.members[0].userId;
-        lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
-            console.log("member", member);
-            const welcomeMessage = {
-                type: "flex",
-                altText: "第五人格歡樂唱",
-                contents: {
-                    "type": "bubble",
-                    "hero": {
-                        "type": "image",
-                        "url": member.pictureUrl ? member.pictureUrl : config.picUrl,
-                        "size": "full",
-                        "aspectRatio": "20:20",
-                        "aspectMode": "cover",
-                        "action": {
-                            "type": "uri",
-                            "uri": member.pictureUrl ? member.pictureUrl : config.picUrl
-                        }
-                    },
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "第五人格歡樂玩",
-                                "weight": "bold",
-                                "size": "xl"
-                            },
-                            {
-                                "type": "box",
-                                "layout": "vertical",
-                                "margin": "lg",
-                                "spacing": "sm",
-                                "contents": [
-                                    {
-                                        "type": "box",
-                                        "layout": "baseline",
-                                        "spacing": "sm",
-                                        "contents": [
-                                            {
-                                                "type": "text",
-                                                "text": `歡迎新來的${member.displayName}萌新😊\n\n` +
-                                                    `\t\t\t\t記事本看下規則，記得按下符號表示看過，有任何事情請召喚群管，歡迎一起歡樂開黑玩遊戲～\n\n` +
-                                                    `\t\t\t\t記得動動小手把群組提醒關掉🙈🙈🙈，這裡有點熱鬧💘💘`,
-                                                "wrap": true,
-                                                "color": "#666666",
-                                                "size": "sm",
-                                                "flex": 5
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "footer": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "spacing": "sm",
-                        "contents": [
-                            {
-                                "type": "button",
-                                "style": "link",
-                                "height": "sm",
-                                "action": {
-                                    "type": "uri",
-                                    "label": "Discord網址在這唷",
-                                    "uri": "https://discord.gg/BZgmVBw"
-                                }
-                            },
-                            {
-                                "type": "spacer",
-                                "size": "sm"
-                            }
-                        ],
-                        "flex": 0
-                    }
-                }
-            };
-            linePushServices_1.pushMessages(groupId, [welcomeMessage]);
-        }).catch(err => console.log(err));
-    }
+exports.welcomeAction = (replyToken, groupId, lineId) => {
+    lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
+        console.log("member", member);
+        const welcomeMessage = config.welcomeMessage(member);
+        // pushMessages(groupId, [welcomeMessage])
+        linePushServices_1.replyMessages(replyToken, [welcomeMessage]);
+    }).catch(err => console.log(err));
 };
 exports.leaveAction = (event) => {
     if (event.source.type == 'group') {

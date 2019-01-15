@@ -1,16 +1,18 @@
-export type Member = {
-    id_Line: string
-    name_Line: string
-    id_Game: string
-    name_Game: string
-    level: number
-    remarks: string
-    timestamp: number
-}
-
 export type User = {
     id: string
     name: string
     picUrl: string
     lineId: string
+}
+
+export type Identity = {
+    id: string
+    userId: string
+    lineId: string
+    lineName: string
+    gameId: string
+    gameName: string
+    level: string
+    remarks: string
+    timestamp: number
 }
