@@ -7,8 +7,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const linePushServices_1 = require("../channelServices/linePushServices");
-const lineServices = __importStar(require("../channelServices/lineServices"));
+const linePushServices_1 = require("../apiServices/linePushServices");
+const lineServices = __importStar(require("../apiServices/lineServices"));
 const userServices = __importStar(require("../dbServices/userServices"));
 const identityServices = __importStar(require("../dbServices/identityServices"));
 const uuid = require("uuid");

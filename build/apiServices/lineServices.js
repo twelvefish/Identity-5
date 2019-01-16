@@ -13,16 +13,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Line = __importStar(require("@line/bot-sdk"));
 const config = __importStar(require("../src/config"));
 const lineClient = new Line.Client(config.LineConfig);
-const linePushServices_1 = require("../channelServices/linePushServices");
+const linePushServices_1 = require("../apiServices/linePushServices");
 const personalDataServices = __importStar(require("../controllerServices/personalDataServices"));
 const userServices = __importStar(require("../dbServices/userServices"));
 const uuid_1 = __importDefault(require("uuid"));
-const imgur_1 = require("@rmp135/imgur");
-let client = new imgur_1.Client('13c8c3e89c7fd4c');
-client = new imgur_1.Client({
-    client_id: '13c8c3e89c7fd4c',
-    client_secret: '840a88a83e78d69b6798053539d9a4aba0e094e9'
-});
+const imgurServices = __importStar(require("./imgurServices"));
 exports.welcomeAction = (replyToken, groupId, lineId) => {
     lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
         console.log("member", member);
@@ -75,11 +70,7 @@ exports.text = (source, event, timestamp) => {
 exports.image = (messageID) => {
     lineClient.getMessageContent(messageID).then(stream => {
         stream.on('data', byteArray => {
-            client.Image.upload(byteArray.toString('base64'), { title: 'AAA' }).then(images => {
-                console.log(images);
-            }).catch(err => {
-                console.log(err);
-            });
+            imgurServices.imgurOauth();
         });
         stream.on('error', (err) => {
             console.log("err", err);

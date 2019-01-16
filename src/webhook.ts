@@ -4,7 +4,7 @@ import * as Line from '@line/bot-sdk'
 import { LineConfig } from './config'
 import { WebhookEvent } from '@line/bot-sdk';
 
-import * as lineServices from '../channelServices/lineServices'
+import * as lineServices from '../apiServices/lineServices'
 var router = express.Router()
 
 router.use(function (req, res, next) {
@@ -36,6 +36,8 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
                             lineServices.text(event.source, event.message, event.timestamp)
                             lineServices.checkUserExist(event.source.groupId, String(event.source.userId))
                             break
+                        case 'image':
+                        lineServices.image(event.message.id)
                         default:
                             break
                     }

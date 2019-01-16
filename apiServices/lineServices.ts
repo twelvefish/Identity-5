@@ -2,11 +2,12 @@ import * as Line from '@line/bot-sdk'
 import * as config from '../src/config'
 const lineClient = new Line.Client(config.LineConfig)
 import { TextEventMessage, TextMessage, Group, Profile } from '@line/bot-sdk'
-import { pushMessages, replyMessages } from '../channelServices/linePushServices'
+import { pushMessages, replyMessages } from '../apiServices/linePushServices'
 import * as  personalDataServices from '../controllerServices/personalDataServices'
 import * as  userServices from '../dbServices/userServices'
 import { User } from '../src/model'
 import uuid from 'uuid';
+// import * as imgurServices from './imgurServices';
 
 export const welcomeAction = (replyToken: string, groupId: string, lineId: string) => {
     lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
@@ -57,6 +58,17 @@ export const text = (source: Group, event: TextEventMessage, timestamp: number) 
             default:
                 break
         }
+    })
+}
+
+export const image = (messageID: string) => {
+    lineClient.getMessageContent(messageID).then(stream => {
+        stream.on('data', byteArray => {
+            // imgurServices.imgurOauth()
+        });
+        stream.on('error', (err) => {
+            console.log("err", err)
+        });
     })
 }
 

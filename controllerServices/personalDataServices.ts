@@ -1,6 +1,6 @@
 import { TextMessage, Profile } from '@line/bot-sdk'
-import { pushMessages } from '../channelServices/linePushServices'
-import * as lineServices from '../channelServices/lineServices'
+import { pushMessages } from '../apiServices/linePushServices'
+import * as lineServices from '../apiServices/lineServices'
 import * as  userServices from '../dbServices/userServices'
 import * as  identityServices from '../dbServices/identityServices'
 import { Identity } from '../src/model'

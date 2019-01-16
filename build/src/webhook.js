@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const Line = __importStar(require("@line/bot-sdk"));
 const config_1 = require("./config");
-const lineServices = __importStar(require("../channelServices/lineServices"));
+const lineServices = __importStar(require("../apiServices/lineServices"));
 var router = express.Router();
 router.use(function (req, res, next) {
     console.log("輸出記錄訊息至終端機", req.method, req.url);
@@ -40,6 +40,8 @@ router.post('/webhook', Line.middleware(config_1.LineConfig), (req, res) => {
                             lineServices.text(event.source, event.message, event.timestamp);
                             lineServices.checkUserExist(event.source.groupId, String(event.source.userId));
                             break;
+                        case 'image':
+                            lineServices.image(event.message.id);
                         default:
                             break;
                     }
