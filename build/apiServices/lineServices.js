@@ -69,8 +69,9 @@ exports.text = (source, event, timestamp) => {
 };
 exports.image = (groupId, link) => {
     const imageMessage = {
-        type: "text",
-        text: `圖片網址 ${link}`
+        type: "image",
+        originalContentUrl: `${link}`,
+        previewImageUrl: `${link}`
     };
     linePushServices_1.pushMessages(groupId, [imageMessage]);
 };

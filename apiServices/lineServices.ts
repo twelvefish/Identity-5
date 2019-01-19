@@ -1,7 +1,7 @@
 import * as Line from '@line/bot-sdk'
 import * as config from '../src/config'
 const lineClient = new Line.Client(config.LineConfig)
-import { TextEventMessage, TextMessage, Group, Profile } from '@line/bot-sdk'
+import { TextEventMessage, TextMessage, Group, Profile, ImageMessage } from '@line/bot-sdk'
 import { pushMessages, replyMessages } from '../apiServices/linePushServices'
 import * as  personalDataServices from '../controllerServices/personalDataServices'
 import * as  userServices from '../dbServices/userServices'
@@ -62,9 +62,10 @@ export const text = (source: Group, event: TextEventMessage, timestamp: number) 
 }
 
 export const image = (groupId: string, link: string) => {
-    const imageMessage: TextMessage = {
-        type: "text",
-        text: `圖片網址  ${link}`
+    const imageMessage: ImageMessage = {
+        type: "image",
+        originalContentUrl: `${link}`,
+        previewImageUrl: `${link}`
     }
     pushMessages(groupId, [imageMessage])
 }
