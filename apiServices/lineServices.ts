@@ -7,7 +7,7 @@ import * as  personalDataServices from '../controllerServices/personalDataServic
 import * as  userServices from '../dbServices/userServices'
 import { User } from '../src/model'
 import uuid from 'uuid';
-// import * as imgurServices from './imgurServices';
+let fs = require('fs')
 
 export const welcomeAction = (replyToken: string, groupId: string, lineId: string) => {
     lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
@@ -61,14 +61,30 @@ export const text = (source: Group, event: TextEventMessage, timestamp: number) 
     })
 }
 
-export const image = (messageID: string) => {
-    lineClient.getMessageContent(messageID).then(stream => {
-        stream.on('data', byteArray => {
-            // imgurServices.imgurOauth()
-        });
-        stream.on('error', (err) => {
-            console.log("err", err)
-        });
+export const image = (groupId: string, link: string) => {
+    const imageMessage: TextMessage = {
+        type: "text",
+        text: `圖片網址  ${link}`
+    }
+    pushMessages(groupId, [imageMessage])
+}
+
+export const convertLineMessageContent = (messageId: string): Promise<any> => {
+    return lineClient.getMessageContent(messageId).then((stream: any) => {
+        return new Promise((resolve, reject) => {
+            // const writable = fs.createWriteStream('aaa.jpg');
+            // stream.pipe(writable);
+            let chunks: any[] = []
+            stream.on('data', (chunk: any) => {
+                chunks.push(chunk)
+            });
+            stream.on('end', (err: any) => {
+                let data = Buffer.concat(chunks)
+                var base64Img = data.toString('base64');
+                resolve(base64Img)
+            })
+            stream.on('error', reject);
+        })
     })
 }
 

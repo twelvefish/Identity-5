@@ -5,6 +5,8 @@ import { LineConfig } from './config'
 import { WebhookEvent } from '@line/bot-sdk';
 
 import * as lineServices from '../apiServices/lineServices'
+import * as imgurServices from '../apiServices/imgurServices';
+
 var router = express.Router()
 
 router.use(function (req, res, next) {
@@ -31,13 +33,18 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
                 break
             case 'message':
                 if (event.source.type == 'group') {
+                    let groupId = event.source.groupId
                     switch (event.message.type) {
                         case 'text':
                             lineServices.text(event.source, event.message, event.timestamp)
-                            lineServices.checkUserExist(event.source.groupId, String(event.source.userId))
+                            lineServices.checkUserExist(groupId, String(event.source.userId))
                             break
                         case 'image':
-                        lineServices.image(event.message.id)
+                            lineServices.convertLineMessageContent(event.message.id).then(async image => {
+                                let link = await imgurServices.uplodeImgur(image)
+                                lineServices.image(groupId, link)
+                            })
+
                         default:
                             break
                     }

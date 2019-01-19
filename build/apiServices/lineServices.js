@@ -17,7 +17,7 @@ const linePushServices_1 = require("../apiServices/linePushServices");
 const personalDataServices = __importStar(require("../controllerServices/personalDataServices"));
 const userServices = __importStar(require("../dbServices/userServices"));
 const uuid_1 = __importDefault(require("uuid"));
-const imgurServices = __importStar(require("./imgurServices"));
+let fs = require('fs');
 exports.welcomeAction = (replyToken, groupId, lineId) => {
     lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
         console.log("member", member);
@@ -67,13 +67,28 @@ exports.text = (source, event, timestamp) => {
         }
     });
 };
-exports.image = (messageID) => {
-    lineClient.getMessageContent(messageID).then(stream => {
-        stream.on('data', byteArray => {
-            imgurServices.imgurOauth();
-        });
-        stream.on('error', (err) => {
-            console.log("err", err);
+exports.image = (groupId, link) => {
+    const imageMessage = {
+        type: "text",
+        text: `圖片網址 ${link}`
+    };
+    linePushServices_1.pushMessages(groupId, [imageMessage]);
+};
+exports.convertLineMessageContent = (messageId) => {
+    return lineClient.getMessageContent(messageId).then((stream) => {
+        return new Promise((resolve, reject) => {
+            // const writable = fs.createWriteStream('aaa.jpg');
+            // stream.pipe(writable);
+            let chunks = [];
+            stream.on('data', (chunk) => {
+                chunks.push(chunk);
+            });
+            stream.on('end', (err) => {
+                let data = Buffer.concat(chunks);
+                var base64Img = data.toString('base64');
+                resolve(base64Img);
+            });
+            stream.on('error', reject);
         });
     });
 };
