@@ -42,7 +42,7 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
                         case 'image':
                             lineServices.convertLineMessageContent(event.message.id).then(async image => {
                                 let link = await imgurServices.uplodeImgur(image)
-                                lineServices.image(groupId, link)
+                                lineServices.image("C3a9ad0efde2526184d4d274b6b940241", link)
                             })
 
                         default:
