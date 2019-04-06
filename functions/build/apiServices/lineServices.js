@@ -20,7 +20,6 @@ const uuid_1 = __importDefault(require("uuid"));
 let fs = require('fs');
 exports.welcomeAction = (replyToken, groupId, lineId) => {
     lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
-        console.log("member", member);
         const welcomeMessage = welcomeFlexTemplate(member);
         linePushServices_1.replyMessages(replyToken, [welcomeMessage]);
     }).catch(err => console.log(err));
@@ -45,7 +44,7 @@ exports.leaveAction = (groupId, lineId) => {
         console.log("===User讀取失敗===", err);
     });
 };
-exports.text = (source, event, timestamp) => {
+exports.text = (replyToken, source, event, timestamp) => {
     const text = event.text;
     const groupId = source.groupId;
     const lineId = source.userId ? source.userId : '';
@@ -54,13 +53,15 @@ exports.text = (source, event, timestamp) => {
         console.log("datas", datas);
         switch (datas[0]) {
             case '波妞設定':
-                personalDataServices.setIdentity(groupId, member, datas, timestamp);
+                personalDataServices.setIdentity(replyToken, groupId, member, datas, timestamp);
                 break;
             case '波妞個資':
-                personalDataServices.findIdentity(groupId, member);
+                personalDataServices.findIdentity(replyToken, groupId, member);
                 break;
             case '波妞查詢':
-                personalDataServices.searchIdentity(groupId, datas);
+                personalDataServices.searchIdentity(replyToken, datas);
+                break;
+            case '波妞教學':
                 break;
             default:
                 break;

@@ -1,29 +1,29 @@
 import { TextMessage, Profile } from '@line/bot-sdk'
-import { pushMessages } from '../apiServices/linePushServices'
+import { replyMessages } from '../apiServices/linePushServices'
 import * as lineServices from '../apiServices/lineServices'
 import * as  userServices from '../dbServices/userServices'
 import * as  identityServices from '../dbServices/identityServices'
 import { Identity } from '../src/model'
 import uuid = require('uuid');
 
-export const dirtyWords = (groupId: string) => {
+export const dirtyWords = (replyToken: string) => {
     const message: TextMessage = {
         type: "text",
         text: "大膽奴才.....你才髒 ! ! !\n你全家都髒"
     }
-    pushMessages(groupId, [message])
+    replyMessages(replyToken, [message])
 }
 
-export const setIdentity = (groupId: string, memberLine: Profile, datas: string[], timestamp: number) => {
+export const setIdentity = (replyToken: string, groupId: string, memberLine: Profile, datas: string[], timestamp: number) => {
     console.log("===使用者輸入===", datas[1])
     console.log("===使用者輸入===", datas[2])
     console.log("===使用者輸入===", datas[3])
     console.log("===使用者輸入===", datas[4])
     let level: number = 0
     level = levelData(datas[3])
-
+    if (!datas[4]) datas[4] = "無"
     if (level == 0) {
-        pushMessages(groupId, [{
+        replyMessages(replyToken, [{
             type: "text",
             text: "波妞對你說 : 位階輸入錯誤，請重新設定\n\n" +
                 "第五人格個資設定(給我用半型空白)\n\n" +
@@ -33,7 +33,7 @@ export const setIdentity = (groupId: string, memberLine: Profile, datas: string[
         userServices.getUserByLineId(memberLine.userId).then(users => {
             if (users.length == 0) {
                 lineServices.checkUserExist(groupId, memberLine.userId)
-                pushMessages(groupId, [{
+                replyMessages(replyToken, [{
                     type: "text",
                     text: `波妞對你說 : ${memberLine.displayName}出現未知的錯誤，請重新嘗試一遍`
                 }])
@@ -53,12 +53,12 @@ export const setIdentity = (groupId: string, memberLine: Profile, datas: string[
                         }
                         identityServices.setIdentity(identity).then(() => {
                             //之後要修改成將字串回傳回去讓lineServices去Call pushMessages
-                            pushMessages(groupId, [{
+                            replyMessages(replyToken, [{
                                 type: "text",
                                 text: `波妞對你說 : 恭喜${memberLine.displayName}第五人格個資設定成功`
                             }])
                         }).catch(() => {
-                            pushMessages(groupId, [{
+                            replyMessages(replyToken, [{
                                 type: "text",
                                 text: `波妞對你說 : ${memberLine.displayName}出現未知的錯誤，請重新嘗試一遍`
                             }])
@@ -77,12 +77,12 @@ export const setIdentity = (groupId: string, memberLine: Profile, datas: string[
                         }
                         identityServices.setIdentity(identity).then(() => {
                             //之後要修改成將字串回傳回去讓lineServices去Call pushMessages
-                            pushMessages(groupId, [{
+                            replyMessages(replyToken, [{
                                 type: "text",
                                 text: `波妞對你說 : 恭喜${memberLine.displayName}第五人格個資更新成功`
                             }])
                         }).catch(() => {
-                            pushMessages(groupId, [{
+                            replyMessages(replyToken, [{
                                 type: "text",
                                 text: `波妞對你說 : ${memberLine.displayName}出現未知的錯誤，請重新嘗試一遍`
                             }])
@@ -95,25 +95,25 @@ export const setIdentity = (groupId: string, memberLine: Profile, datas: string[
 
 }
 
-export const findIdentity = (groupId: string, memberLine: Profile) => {
+export const findIdentity = (replyToken: string, groupId: string, memberLine: Profile) => {
     userServices.getUserByLineId(memberLine.userId).then(users => {
         if (users.length == 0) {
             lineServices.checkUserExist(groupId, memberLine.userId)
-            pushMessages(groupId, [{
+            replyMessages(replyToken, [{
                 type: "text",
                 text: `波妞對你說 : ${memberLine.displayName}出現未知的錯誤，請重新嘗試一遍`
             }])
         } else {
             identityServices.getIdentityByUserId(users[0].id).then(identitys => {
                 if (identitys.length == 0) {
-                    pushMessages(groupId, [{
+                    replyMessages(replyToken, [{
                         type: "text",
                         text: "波妞對你說 : 位階輸入錯誤，請重新設定\n\n" +
                             "第五人格個資設定(給我用半型空白)\n\n" +
                             "波妞設定 遊戲角色名稱 遊戲ID 位階 備註\n"
                     }])
                 } else {
-                    pushMessages(groupId, [{
+                    replyMessages(replyToken, [{
                         type: "text",
                         text: "波妞~波妞~\n\n" +
                             `Line姓名  : ${memberLine.displayName}\n` +
@@ -128,7 +128,7 @@ export const findIdentity = (groupId: string, memberLine: Profile) => {
     })
 }
 
-export const searchIdentity = (groupId: string, datas: string[]) => {
+export const searchIdentity = (replyToken: string, datas: string[]) => {
 
     identityServices.getIdentitys().then((identitys: any) => {
         if (identitys.length > 0) {
@@ -150,13 +150,13 @@ export const searchIdentity = (groupId: string, datas: string[]) => {
                 matchMember = matchMember + "目前系統並無相對應的匹配資料\n"
             }
 
-            pushMessages(groupId, [{
+            replyMessages(replyToken, [{
                 type: "text",
                 text: matchMember
             }])
 
         } else {
-            pushMessages(groupId, [{
+            replyMessages(replyToken, [{
                 type: "text",
                 text: "波妞對你說 : 系統欠缺資料，請大家踴躍提供"
             }])

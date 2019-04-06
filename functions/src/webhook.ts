@@ -23,12 +23,11 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
             case 'memberJoined':
                 if (event.source.type == 'group') {
                     lineServices.welcomeAction(event.replyToken, event.source.groupId, event.joined.members[0].userId)
-                    lineServices.checkUserExist(event.source.groupId, String(event.source.userId))
                 }
                 break
             case 'memberLeft':
                 if (event.source.type == 'group') {
-                    lineServices.leaveAction(event.source.groupId, event.left.members[0].userId)
+                    // lineServices.leaveAction(event.source.groupId, event.left.members[0].userId)
                 }
                 break
             case 'message':
@@ -36,14 +35,14 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
                     let groupId = event.source.groupId
                     switch (event.message.type) {
                         case 'text':
-                            lineServices.text(event.source, event.message, event.timestamp)
+                            lineServices.text(event.replyToken,event.source, event.message, event.timestamp)
                             lineServices.checkUserExist(groupId, String(event.source.userId))
                             break
-                        case 'image':
-                            lineServices.convertLineMessageContent(event.message.id).then(async image => {
-                                let link = await imgurServices.uplodeImgur(image)
-                                lineServices.image("C3a9ad0efde2526184d4d274b6b940241", link)
-                            })
+                        // case 'image':
+                        //     lineServices.convertLineMessageContent(event.message.id).then(async image => {
+                        //         let link = await imgurServices.uplodeImgur(image)
+                        //         lineServices.image("C3a9ad0efde2526184d4d274b6b940241", link)
+                        //     })
 
                         default:
                             break

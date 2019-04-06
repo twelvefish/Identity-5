@@ -13,4 +13,4 @@
 
 6、heroku logs --tail
 
-7、npm run start
+7、npm start

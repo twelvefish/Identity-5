@@ -11,7 +11,6 @@ let fs = require('fs')
 
 export const welcomeAction = (replyToken: string, groupId: string, lineId: string) => {
     lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
-        console.log("member", member)
         const welcomeMessage: any = welcomeFlexTemplate(member)
         replyMessages(replyToken, [welcomeMessage])
     }).catch(err => console.log(err))
@@ -37,7 +36,7 @@ export const leaveAction = (groupId: string, lineId: string) => {
     })
 }
 
-export const text = (source: Group, event: TextEventMessage, timestamp: number) => {
+export const text = (replyToken: string, source: Group, event: TextEventMessage, timestamp: number) => {
     const text = event.text
     const groupId = source.groupId
     const lineId = source.userId ? source.userId : ''
@@ -47,13 +46,15 @@ export const text = (source: Group, event: TextEventMessage, timestamp: number) 
         console.log("datas", datas)
         switch (datas[0]) {
             case '波妞設定':
-                personalDataServices.setIdentity(groupId, member, datas, timestamp)
+                personalDataServices.setIdentity(replyToken, groupId, member, datas, timestamp)
                 break
             case '波妞個資':
-                personalDataServices.findIdentity(groupId, member)
+                personalDataServices.findIdentity(replyToken, groupId, member)
                 break
             case '波妞查詢':
-                personalDataServices.searchIdentity(groupId, datas)
+                personalDataServices.searchIdentity(replyToken, datas)
+                break
+            case '波妞教學':
                 break
             default:
                 break
