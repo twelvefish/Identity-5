@@ -4,9 +4,9 @@ import * as Line from '@line/bot-sdk'
 import { LineConfig } from './config'
 import { WebhookEvent } from '@line/bot-sdk';
 
-import * as lineServices from '../apiServices/lineServices'
-import * as imgurServices from '../apiServices/imgurServices';
-import * as  personalDataServices from '../controllerServices/personalDataServices'
+import * as lineServices from '../services/apiServices/lineServices'
+import * as imgurServices from '../services/apiServices/imgurServices';
+import * as  personalDataServices from '../services/controllerServices/personalDataServices'
 
 var router = express.Router()
 

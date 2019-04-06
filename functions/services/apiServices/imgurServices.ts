@@ -1,4 +1,4 @@
-import * as config from "../src/config";
+import * as config from "../../src/config";
 
 var imgur = require('imgur');
 imgur.setClientId(config.imgurCilentId);

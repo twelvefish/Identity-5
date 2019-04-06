@@ -11,11 +11,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Line = __importStar(require("@line/bot-sdk"));
-const config = __importStar(require("../src/config"));
+const config = __importStar(require("../../src/config"));
 const lineClient = new Line.Client(config.LineConfig);
-const linePushServices_1 = require("../services/apiServices/linePushServices");
-const personalDataServices = __importStar(require("../services/controllerServices/personalDataServices"));
-const userServices = __importStar(require("../services/dbServices/userServices"));
+const linePushServices_1 = require("../apiServices/linePushServices");
+const personalDataServices = __importStar(require("../controllerServices/personalDataServices"));
+const userServices = __importStar(require("../dbServices/userServices"));
 const uuid_1 = __importDefault(require("uuid"));
 let fs = require('fs');
 exports.welcomeAction = (replyToken, groupId, lineId) => {

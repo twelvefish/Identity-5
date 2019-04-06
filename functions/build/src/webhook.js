@@ -10,8 +10,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const Line = __importStar(require("@line/bot-sdk"));
 const config_1 = require("./config");
-const lineServices = __importStar(require("../apiServices/lineServices"));
-const personalDataServices = __importStar(require("../controllerServices/personalDataServices"));
+const lineServices = __importStar(require("../services/apiServices/lineServices"));
+const personalDataServices = __importStar(require("../services/controllerServices/personalDataServices"));
 var router = express.Router();
 router.use(function (req, res, next) {
     console.log("輸出記錄訊息至終端機", req.method, req.url);

@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { Identity } from '../src/model'
+import { Identity } from '../../src/model'
 
 const identityCollection = admin.firestore().collection("Identity");
 

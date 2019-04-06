@@ -1,5 +1,5 @@
 import * as Line from '@line/bot-sdk'
-import { LineConfig } from '../src/config'
+import { LineConfig } from '../../src/config'
 const lineClient = new Line.Client(LineConfig)
 
 export const pushMessages = (userId: string, messages: any[]) => {

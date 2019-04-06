@@ -1,11 +1,11 @@
 import * as Line from '@line/bot-sdk'
-import * as config from '../src/config'
+import * as config from '../../src/config'
 const lineClient = new Line.Client(config.LineConfig)
 import { TextEventMessage, TextMessage, Group, Profile, ImageMessage } from '@line/bot-sdk'
 import { pushMessages, replyMessages } from '../apiServices/linePushServices'
 import * as  personalDataServices from '../controllerServices/personalDataServices'
 import * as  userServices from '../dbServices/userServices'
-import { User } from '../src/model'
+import { User } from '../../src/model'
 import uuid from 'uuid';
 let fs = require('fs')
 

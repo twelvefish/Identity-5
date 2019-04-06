@@ -7,10 +7,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const linePushServices_1 = require("../services/apiServices/linePushServices");
-const lineServices = __importStar(require("../services/apiServices/lineServices"));
-const userServices = __importStar(require("../services/dbServices/userServices"));
-const identityServices = __importStar(require("../services/dbServices/identityServices"));
+const linePushServices_1 = require("../apiServices/linePushServices");
+const lineServices = __importStar(require("../apiServices/lineServices"));
+const userServices = __importStar(require("../dbServices/userServices"));
+const identityServices = __importStar(require("../dbServices/identityServices"));
 const uuid = require("uuid");
 exports.dirtyWords = (replyToken) => {
     const message = {

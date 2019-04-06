@@ -3,7 +3,7 @@ import { replyMessages } from '../apiServices/linePushServices'
 import * as lineServices from '../apiServices/lineServices'
 import * as  userServices from '../dbServices/userServices'
 import * as  identityServices from '../dbServices/identityServices'
-import { Identity } from '../src/model'
+import { Identity } from '../../src/model'
 import uuid = require('uuid');
 
 export const dirtyWords = (replyToken: string) => {

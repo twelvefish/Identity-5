@@ -5,7 +5,7 @@
 
 2、git add .
 
-3、git commit -a -m ""
+3、git commit -m ""
 
 4、git push heroku master
 
