@@ -16,7 +16,5 @@ exports.pushMessages = (userId, messages) => {
     });
 };
 exports.replyMessages = (replyToken, messages) => {
-    messages.forEach(message => {
-        lineClient.replyMessage(replyToken, message);
-    });
+    lineClient.replyMessage(replyToken, messages);
 };

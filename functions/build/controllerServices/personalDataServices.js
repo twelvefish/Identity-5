@@ -27,7 +27,7 @@ exports.setIdentity = (replyToken, groupId, memberLine, datas, timestamp) => {
     let level = 0;
     level = levelData(datas[3]);
     if (!datas[4])
-        datas[4] = "";
+        datas[4] = "無";
     if (level == 0) {
         linePushServices_1.replyMessages(replyToken, [{
                 type: "text",
@@ -167,6 +167,16 @@ exports.searchIdentity = (replyToken, datas) => {
                 }]);
         }
     });
+};
+exports.teachIdentity = (replyToken) => {
+    linePushServices_1.replyMessages(replyToken, [{
+            type: "text",
+            text: "↓↓請復製下列文字 / 將內容改成你的↓↓\n\n波妞設定 可愛園丁 12345678 6階 備註"
+        }, {
+            type: "image",
+            originalContentUrl: "https://i.imgur.com/V0ZjZWZ.jpg",
+            previewImageUrl: "https://i.imgur.com/V0ZjZWZ.jpg"
+        }]);
 };
 const levelData = (level) => {
     if (level) {

@@ -6,6 +6,7 @@ import { WebhookEvent } from '@line/bot-sdk';
 
 import * as lineServices from '../apiServices/lineServices'
 import * as imgurServices from '../apiServices/imgurServices';
+import * as  personalDataServices from '../controllerServices/personalDataServices'
 
 var router = express.Router()
 
@@ -23,6 +24,7 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
             case 'memberJoined':
                 if (event.source.type == 'group') {
                     lineServices.welcomeAction(event.replyToken, event.source.groupId, event.joined.members[0].userId)
+                    personalDataServices.teachIdentity(event.replyToken)
                 }
                 break
             case 'memberLeft':

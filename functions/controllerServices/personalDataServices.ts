@@ -164,6 +164,17 @@ export const searchIdentity = (replyToken: string, datas: string[]) => {
     })
 }
 
+export const teachIdentity = (replyToken: string) => {
+    replyMessages(replyToken, [{
+        type: "text",
+        text: "↓↓請復製下列文字 / 將內容改成你的↓↓\n\n波妞設定 可愛園丁 12345678 6階 備註"
+    }, {
+        type: "image",
+        originalContentUrl: "https://i.imgur.com/V0ZjZWZ.jpg",
+        previewImageUrl: "https://i.imgur.com/V0ZjZWZ.jpg"
+    }])
+}
+
 const levelData = (level: string): number => {
     if (level) {
         if (level.indexOf('1') != -1 || level.indexOf('一') != -1 || level.indexOf('壹') != -1) {

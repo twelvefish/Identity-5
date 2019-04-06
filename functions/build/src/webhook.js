@@ -11,6 +11,7 @@ const express = require("express");
 const Line = __importStar(require("@line/bot-sdk"));
 const config_1 = require("./config");
 const lineServices = __importStar(require("../apiServices/lineServices"));
+const personalDataServices = __importStar(require("../controllerServices/personalDataServices"));
 var router = express.Router();
 router.use(function (req, res, next) {
     console.log("輸出記錄訊息至終端機", req.method, req.url);
@@ -25,6 +26,7 @@ router.post('/webhook', Line.middleware(config_1.LineConfig), (req, res) => {
             case 'memberJoined':
                 if (event.source.type == 'group') {
                     lineServices.welcomeAction(event.replyToken, event.source.groupId, event.joined.members[0].userId);
+                    personalDataServices.teachIdentity(event.replyToken);
                 }
                 break;
             case 'memberLeft':

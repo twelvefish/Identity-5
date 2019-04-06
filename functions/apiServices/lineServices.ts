@@ -55,6 +55,7 @@ export const text = (replyToken: string, source: Group, event: TextEventMessage,
                 personalDataServices.searchIdentity(replyToken, datas)
                 break
             case '波妞教學':
+                personalDataServices.teachIdentity(replyToken)
                 break
             default:
                 break

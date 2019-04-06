@@ -9,7 +9,5 @@ export const pushMessages = (userId: string, messages: any[]) => {
 }
 
 export const replyMessages = (replyToken: string, messages: any[]) => {
-    messages.forEach(message => {
-        lineClient.replyMessage(replyToken, message)
-    })
+        lineClient.replyMessage(replyToken, messages)
 }

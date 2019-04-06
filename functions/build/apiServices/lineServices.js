@@ -62,6 +62,7 @@ exports.text = (replyToken, source, event, timestamp) => {
                 personalDataServices.searchIdentity(replyToken, datas);
                 break;
             case '波妞教學':
+                personalDataServices.teachIdentity(replyToken);
                 break;
             default:
                 break;
