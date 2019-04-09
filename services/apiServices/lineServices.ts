@@ -12,7 +12,6 @@ let fs = require('fs')
 export const welcomeAction = (replyToken: string, groupId: string, lineId: string) => {
     lineClient.getGroupMemberProfile(groupId, lineId).then(member => {
         const welcomeMessage: any = welcomeFlexTemplate(member)
-        console.log("===welcomeMessage===",welcomeMessage)
         replyMessages(replyToken, [welcomeMessage])
     }).catch(err => console.log(err))
 }
