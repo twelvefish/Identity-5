@@ -24,7 +24,7 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
             case 'memberJoined':
                 if (event.source.type == 'group') {
                     lineServices.welcomeAction(event.replyToken, event.source.groupId, event.joined.members[0].userId)
-                    personalDataServices.teachIdentity(event.replyToken)
+                    // personalDataServices.teachIdentity(event.replyToken)
                 }
                 break
             case 'memberLeft':
