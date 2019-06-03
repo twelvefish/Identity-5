@@ -36,6 +36,14 @@ export const leaveAction = (groupId: string, lineId: string) => {
     })
 }
 
+export const keywords = (replyToken: string, text: string) => {
+    const message: TextMessage = {
+        type: "text",
+        text: text
+    }
+    replyMessages(replyToken, [message])
+}
+
 export const text = (replyToken: string, source: Group, event: TextEventMessage, timestamp: number) => {
     const text = event.text
     const groupId = source.groupId

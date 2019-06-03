@@ -37,7 +37,14 @@ router.post('/webhook', Line.middleware(LineConfig), (req, res) => {
                     let groupId = event.source.groupId
                     switch (event.message.type) {
                         case 'text':
-                            lineServices.text(event.replyToken,event.source, event.message, event.timestamp)
+                            if (event.message.text.indexOf('狐狸') != -1) {
+                                lineServices.keywords(event.replyToken, '狐狸大變態')
+                            } else if (event.message.text.indexOf('爆炸') != -1) {
+                                lineServices.keywords(event.replyToken, '爆炸易燃物')
+                            } else if (event.message.text.indexOf('首領') != -1) {
+                                lineServices.keywords(event.replyToken, '變態首領狐狸')
+                            }
+                            lineServices.text(event.replyToken, event.source, event.message, event.timestamp)
                             lineServices.checkUserExist(groupId, String(event.source.userId))
                             break
                         // case 'image':
