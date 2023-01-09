@@ -21,7 +21,7 @@
     "@types/express": "^4.16.0",
     "@types/uuid": "^3.4.4",
     "express": "^4.16.4",
-    "firebase-admin": "^6.3.0",
+    "firebase-admin": "^11.4.1",
     "fs": "0.0.1-security",
     "imgur": "^0.3.1",
     "typescript": "^3.2.2",
